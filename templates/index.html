@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Belly Button Plots</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron text-center">    
+            <div class="row">
+                <h1>Belly Button Biodiversity Dashboard</h1>
+                <h5>Use the interactive charts to explore the dataset</h5>
+            </div>
+        </div>    
+        
+        
+        <div class="row">
+            <div class="col-lg-3">
+                <!-- Test subj dropdown selector box -->
+                <label for="test_subjects">Test Subject ID No.: </label>
+                <select id="test_subjects">
+
+                </select>
+                <!--Demo info card -->
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">Demographic Info</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <ul class="card-text">
+                          <li></li>
+                          <li></li>
+                          <li></li>
+                      </ul>
+                      <a href="#" class="card-link">Card link</a>
+                    </div>
+                  </div>
+            </div>
+            
+            <div class = "col-lg-5">   
+                <div id="hbar-plot">
+                    <!--Bar plot here -->
+                </div> 
+            </div>
+            
+            <div class="col-lg-4">
+                <!--Washing freq graphic here -->
+            </div>
+        </div> <!-- End row -->
+    
+        
+        <div class="row">
+
+            <div class="col-lg-12">
+                <!-- Bubble chart here -->
+            </div>
+
+        </div>  <!--End row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <footer>This is the footer!</footer>
+                <script src="plots.js"></script>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>
