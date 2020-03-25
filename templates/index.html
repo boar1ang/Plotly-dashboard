@@ -28,8 +28,8 @@
                 <select id="test_subjects">
 
                 </select>
-                <!--Demo info card -->
-                <div class="card" style="width: 18rem;">
+                <!--Demo info (metadata) card -->
+                <div class="card" id="metadata" style="width: 18rem;">
                     <div class="card-body">
                       <h5 class="card-title">Demographic Info</h5>
                       <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -46,12 +46,15 @@
             <div class = "col-lg-5">   
                 <div id="hbar-plot">
                     <!--Bar plot here -->
+                    <h6>Top 10 OTUs</h6>
+                    <p>OTU = Operational Taxonomic Units; these are the microbes that colonize the human navel.</p>
                 </div> 
             </div>
             
             <div class="col-lg-4">
-                <!--Washing freq graphic here -->
+                <!--Washing freq gauge chart here -->
             </div>
+
         </div> <!-- End row -->
     
         
@@ -65,12 +68,10 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <footer>This is the footer!</footer>
-                <script src="plots.js"></script>
+                <footer style="text-align: center;">This is the footer!</footer>
             </div>
         </div>
     </div>
-    
 </body>
-
+<script src="../static/plots.js"></script>
 </html>
