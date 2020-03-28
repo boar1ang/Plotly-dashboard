@@ -1,59 +1,158 @@
 //Plot.ly Homework Week 15
 
-//Get json data and log to console
-d3.json("../data/samples.json").then((data) => {
-    console.log(data); //object
+function showMetadata(SampleId)
+{        
+    console.log(`Calling showMetadata(${SampleId})`); 
+
+    d3.json("../data/samples.json").then((data) => {
+        var metadata = data.metadata;
+
+        var results = metadata.filter(m => m.id == SampleId);
+            var result = results[0];
+        
+        var demoCardArea = d3.select("#sample-metadata");
+        demoCardArea.html(""); 
+
+        Object.entries(result).forEach(([key, value]) => {
+        var metadata = demoCardArea.append("h6")
+            .text(`${key}: ${value}`);
+            
+        });
+        
+    });
+      
+}
+
+
+function drawBarGraph(SampleId)
+{
+    console.log(`Calling drawBarGraph(${SampleId})`);
+    var barChartArea = d3.select("#bar");
     
+    d3.json("../data/samples.json").then((data) => {
         //Sample Data -------------------
         var samples = data.samples;
-        console.log(samples); //object
+            console.log(samples);
+            var results = samples.filter(s => s.id == SampleId);
+                var result = results[0];
+               
+                    var otu_ids = result.otu_ids;
+                    var otu_labels = result.otu_labels;
+                    var values = result.sample_values;
 
-        var values = samples.forEach(sample => console.log(`Sample values = ${sample.sample_values}`));
-        var otu_ids = samples.forEach(sample => console.log(`OTU ID = ${sample.otu_ids}`));
-        var otu_labels = samples.forEach(sample => console.log(`Label = ${sample.otu_labels}`));
-        
-        //Test Subject Data ------------------
-        var testSubjMetadata = data.metadata;
-        console.log(testSubjMetadata); //object   
-        
-        var wfreq = testSubjMetadata.forEach(item => console.log(`Wash Freq. = ${item.wfreq}`));
+                    yticks = otu_ids.slice(0,10)
+                    .map(otuId => `OTU ${otuId}`)
+                    .reverse();
 
+                var barData = {
+                    x: values.slice(0, 10).reverse(),
+                    y: yticks,
+                    type: "bar",
+                    text: otu_labels.slice(0, 10).reverse(),
+                    orientation: "h",
+                    hovertext: otu_labels
+                };
+
+                barArray = [barData];
+
+                barLayout = {
+                    title:"Top 10 OTUs (Bacteria Cultures) Found",
+                    margin: {t: 30, l: 110},
+                    xaxis: {title: "Qty. of Sample Values"},
+                    yaxis: {title: "OTU ID"},
+                    barmode: 'stack'
+                };
+
+            Plotly.newPlot("bar", barArray, barLayout);
     });
-
-var subjSelectorArea = d3.select("#test-subjects")
-var demoCardArea = d3.select("#metadata");
-var barChartArea = d3.select("#hbar-plot");
-
-
-
-//Bar chart
-var trace1 = {
-    x: values,
-    y: otu_ids,
-    type: "bar",
-    orientation: "h" 
-};
-
-var data = [trace1];
-
-var layout = {
-    title: "Top 10 OTUs per Test Subject",
-    xaxis: {title: "Qty. of Sample Values"},
-    yaxis: {title: "OTU ID"},
-    barmode: 'stack'
-};
-Plotly.newPlot("hbar-plot", data, layout);
+}
+           
+        // var wfreq = testSubjMetadata.forEach(item => 
+        //     console.log(`Wash Freq. = ${item.wfreq}`));         
+    
 
 
-// Gauge chart code from https://plot.ly/javascript/gauge-charts/
-// var data = [
-// 	{
-// 		domain: { x: [0, 1], y: [0, 1] },
-// 		value: 270,
-// 		title: { text: "Speed" },
-// 		type: "indicator",
-// 		mode: "gauge+number"
-// 	}
-// ];
-// var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-// Plotly.newPlot('myDiv', data, layout);
+
+
+
+function drawBubbleChart(SampleId)
+{
+    console.log(`Calling drawBubbleChart(${SampleId})`);
+    var bubbleChartArea = d3.select("#bubble");
+    
+    d3.json("../data/samples.json").then((data) => {
+        var samplesData = data.samples; 
+        console.log(samplesData);    
+        
+        var results = samplesData.filter(s => s.id == SampleId);
+        var result = results[0];
+
+        var xaxis = result.otu_ids;
+        var yaxis = result.sample_values;
+        var size = result.sample_values;
+        var color = result.otu_ids;
+        var labels = result.otu_labels;
+        
+
+    var bubbleChartData = {
+        x: xaxis,
+        y: yaxis,
+        text: labels,
+        mode: 'markers',
+        marker: {
+                size: size,
+                color: color}
+        };
+    
+    var data = [bubbleChartData];
+    var layout = {
+        title: "Belly Button Bacteria",
+        xaxis: {title: "OTU ID"},
+        margin: {t: 30, l: 50}
+        };
+    
+    Plotly.newPlot("bubble", data, layout);
+    });
+}
+// Event handler; calls each function
+function optionChanged(newSampleId) 
+{
+        console.log(`User selected new sample ID: ${newSampleId}`);
+        drawBubbleChart(newSampleId);
+        drawBarGraph(newSampleId);
+        showMetadata(newSampleId);
+}
+
+
+function initDashboard() 
+{
+    console.log("Initializing Dashboard ...");
+    
+    //Select dropdown element
+    var subjSelectorArea = d3.select("#selDataset");
+        
+    //Read in json data and log to console
+    d3.json("../data/samples.json").then((data) => {
+        console.log(data); //object
+    
+    
+        //Assign "names" list to variable
+        var sampNames = data.names;
+            console.log(sampNames);
+    
+        sampNames.forEach((SampleId) => {
+            subjSelectorArea.append("option")
+                .text(SampleId)
+                .property("value", SampleId);
+        });
+                
+    
+        var SampleId = sampNames[0];
+        
+        drawBarGraph(SampleId);
+        drawBubbleChart(SampleId); 
+        showMetadata(SampleId);   
+    });
+}
+//call initDashboard function to load page with default test subject sample ID (name) value   
+initDashboard(); 
