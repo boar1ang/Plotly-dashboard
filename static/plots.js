@@ -1,10 +1,9 @@
 //Plot.ly Homework Week 15
-
 function showMetadata(SampleId)
 {        
     console.log(`Calling showMetadata(${SampleId})`); 
 
-    d3.json("../data/samples.json").then((data) => {
+    d3.json("./samples.json").then((data) => {
         var metadata = data.metadata;
 
         var results = metadata.filter(m => m.id == SampleId);
@@ -29,7 +28,7 @@ function drawBarGraph(SampleId)
     console.log(`Calling drawBarGraph(${SampleId})`);
     var barChartArea = d3.select("#bar");
     
-    d3.json("../data/samples.json").then((data) => {
+    d3.json("./samples.json").then((data) => {
         //Sample Data -------------------
         var samples = data.samples;
             console.log(samples);
@@ -67,20 +66,13 @@ function drawBarGraph(SampleId)
     });
 }
            
-        // var wfreq = testSubjMetadata.forEach(item => 
-        //     console.log(`Wash Freq. = ${item.wfreq}`));         
-    
-
-
-
-
-
+                 
 function drawBubbleChart(SampleId)
 {
     console.log(`Calling drawBubbleChart(${SampleId})`);
     var bubbleChartArea = d3.select("#bubble");
     
-    d3.json("../data/samples.json").then((data) => {
+    d3.json("./samples.json").then((data) => {
         var samplesData = data.samples; 
         console.log(samplesData);    
         
@@ -114,16 +106,64 @@ function drawBubbleChart(SampleId)
     Plotly.newPlot("bubble", data, layout);
     });
 }
-// Event handler; calls each function
+
+// Event handler; calls each function when a change takes place to the DOM:
 function optionChanged(newSampleId) 
 {
         console.log(`User selected new sample ID: ${newSampleId}`);
         drawBubbleChart(newSampleId);
         drawBarGraph(newSampleId);
         showMetadata(newSampleId);
+        buildGaugeChart(newSampleId);
 }
 
+function buildGaugeChart(SampleId) 
+{
+    console.log(`Calling buildGaugeChart(${SampleId})`);
+    
 
+    d3.json("./samples.json").then((data) => {
+        var metadata = data.metadata;
+        
+        var results = metadata.filter(m => m.id == SampleId);
+            var result = results[0];
+            var wfreq = result.wfreq;
+            console.log(wfreq);
+    
+                    
+
+var gaugeData = [
+{
+    domain: { x: [0, 1], y: [0, 1] },
+    title: {text: "Belly Button Wash Frequency<br>(Scrubs per Week)"},
+    type: "indicator",
+    mode: "gauge",
+    gauge: {
+        axis: {
+            range: [0, 9],
+            tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            ticks: "outside"},
+        steps: [
+            {range: [0, 3], color: "#c6ffdd"},
+            {range: [3, 6], color: "#FBD786"},
+            {range: [6, 9], color: "#f7797d"}
+                
+            ],
+        
+            threshold: {
+                line: { color: "#900C3F", width: 3 },
+                thickness: 1,
+                value: wfreq
+            }
+        }
+    }
+];   
+var data = [gaugeData];
+var layout = {width: 300, height: 275, margin: {t: 0, b: 0} };
+Plotly.newPlot("gauge", data, layout);});}
+
+
+//Create a function to initialize the dashboard with a default plot:
 function initDashboard() 
 {
     console.log("Initializing Dashboard ...");
@@ -131,8 +171,8 @@ function initDashboard()
     //Select dropdown element
     var subjSelectorArea = d3.select("#selDataset");
         
-    //Read in json data and log to console
-    d3.json("../data/samples.json").then((data) => {
+    //Use D3 to read in json data and log to console:
+    d3.json("./samples.json").then((data) => {
         console.log(data); //object
     
     
@@ -150,8 +190,9 @@ function initDashboard()
         var SampleId = sampNames[0];
         
         drawBarGraph(SampleId);
-        drawBubbleChart(SampleId); 
+        drawBubbleChart(SampleId);
         showMetadata(SampleId);   
+        buildGaugeChart(SampleId); 
     });
 }
 //call initDashboard function to load page with default test subject sample ID (name) value   
